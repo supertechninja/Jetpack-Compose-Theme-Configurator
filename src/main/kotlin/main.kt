@@ -27,24 +27,37 @@ fun main() = Window {
             topBar = {
                 TopAppBar(title = {
                     Text("Compose Components", color = Color.White)
-                }, backgroundColor = Color.Black)
+                }, backgroundColor = Color.Black,
+                actions = {
+                    IconButton(onClick = {
+
+                    }){
+                        Icon(imageVector = Icons.Default.Settings, tint = Color.White)
+                    }
+                })
 
             },
             bodyContent = {
                 Box {
                     Row {
                         Column(
-                            modifier = Modifier.fillMaxHeight().preferredWidth(200.dp)
+                            modifier = Modifier.fillMaxHeight().preferredWidth(220.dp)
                                 .background(MaterialTheme.colors.surface)
                                 .padding(top = 8.dp, bottom = 8.dp),
                             horizontalAlignment = Alignment.Start
                         ) {
                             val listOfComponents = mutableListOf(
-                                "AppBar",
+                                "Top App Bar",
                                 "Buttons",
-                                "ListItems",
                                 "TextFields",
-                                "Tabs"
+                                "ListItems",
+                                "Tabs",
+                                "Bottom Navigation",
+                                "Floating Action Buttons",
+                                "Dialogs",
+                                "Bottom App Bar",
+                                "Cards",
+                                "Menus"
                             )
                             LazyColumnFor(items = listOfComponents) {
                                 val backgroundColor =
@@ -62,7 +75,7 @@ fun main() = Window {
                             Spacer(modifier = Modifier.preferredHeight(20.dp))
 
                             when (selectedComponent) {
-                                "AppBar" -> {
+                                "Top App Bar" -> {
                                     TopAppBarDemo()
                                 }
                                 "Buttons" -> {

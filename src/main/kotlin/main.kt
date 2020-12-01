@@ -97,21 +97,7 @@ fun main() = Window {
 
                                 }
                                 "Buttons" -> {
-                                    Row {
-                                        val modifier = Modifier.padding(8.dp)
-                                        OutlinedButton(onClick = {
-                                        }, modifier = modifier) {
-                                            Text("Outlined Button")
-                                        }
-
-                                        TextButton(onClick = {}, modifier = modifier) {
-                                            Text("Text Button")
-                                        }
-
-                                        Button(onClick = {}, modifier = modifier) {
-                                            Text("Plain Button")
-                                        }
-                                    }
+                                    Buttons()
                                 }
                                 "TextFields" -> {
                                     TextFields()

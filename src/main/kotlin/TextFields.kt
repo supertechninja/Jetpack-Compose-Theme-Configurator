@@ -190,7 +190,7 @@ fun TextFields() {
 }
 
 @Composable
-private fun ColumnScope.Title(title: String) {
+fun ColumnScope.Title(title: String) {
     Spacer(Modifier.preferredHeight(16.dp))
     Text(
         text = title,
@@ -201,7 +201,7 @@ private fun ColumnScope.Title(title: String) {
 }
 
 @Composable
-private fun OptionRow(
+fun OptionRow(
     title: String,
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,

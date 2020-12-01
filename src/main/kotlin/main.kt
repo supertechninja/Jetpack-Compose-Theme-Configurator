@@ -63,38 +63,7 @@ fun main() = Window {
 
                             when (selectedComponent) {
                                 "AppBar" -> {
-                                    Column {
-                                        TopAppBar(
-                                            title = {
-                                                Text("Title")
-                                            },
-                                            elevation = 4.dp,
-                                            navigationIcon = {
-                                                Icon(imageVector = Icons.Default.ArrowBack)
-                                            },
-                                        )
-
-                                        Spacer(modifier = Modifier.preferredHeight(20.dp))
-
-                                        TopAppBar(title = {
-                                            Text("Title 2")
-                                        }, navigationIcon = {
-                                            Icon(imageVector = Icons.Default.ArrowBack)
-                                        }, elevation = 4.dp,
-                                            actions = {
-                                                Icon(
-                                                    imageVector = Icons.Default.Add,
-                                                    modifier = Modifier.padding(4.dp)
-                                                        .clickable(onClick = {})
-                                                )
-                                                Text(
-                                                    "Delete",
-                                                    modifier = Modifier.padding(4.dp)
-                                                        .clickable(onClick = {})
-                                                )
-                                            })
-                                    }
-
+                                    TopAppBarDemo()
                                 }
                                 "Buttons" -> {
                                     Buttons()

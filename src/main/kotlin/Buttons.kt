@@ -55,7 +55,7 @@ fun Buttons() {
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
 
-            Title("TextField Type")
+            Title("Button Type")
 
             Column {
                 ButtonType.values().map { it.name }

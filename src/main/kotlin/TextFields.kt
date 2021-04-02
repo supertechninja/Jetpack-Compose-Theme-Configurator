@@ -1,14 +1,13 @@
-import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.savedinstancestate.savedInstanceState
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,14 +15,15 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun TextFields() {
-    ScrollableColumn(contentPadding = PaddingValues(10.dp)) {
-        var text by savedInstanceState { "" }
-        var leadingChecked by savedInstanceState { false }
-        var trailingChecked by savedInstanceState { false }
-        val characterCounterChecked by savedInstanceState { false }
-        var singleLineChecked by savedInstanceState { true }
-        var selectedOption by savedInstanceState { Option.None }
-        var selectedTextField by savedInstanceState { TextFieldType.Filled }
+    var scrollState = rememberScrollState()
+    Column(modifier = Modifier.padding(10.dp).verticalScroll(scrollState)) {
+        var text by remember { mutableStateOf("") }
+        var leadingChecked by remember { mutableStateOf(false) }
+        var trailingChecked by remember { mutableStateOf(false) }
+        val characterCounterChecked by remember { mutableStateOf(false) }
+        var singleLineChecked by remember { mutableStateOf(true) }
+        var selectedOption by remember { mutableStateOf(Option.None) }
+        var selectedTextField by remember { mutableStateOf(TextFieldType.Filled) }
 
         val textField: @Composable () -> Unit = @Composable {
             when (selectedTextField) {
@@ -39,22 +39,23 @@ fun TextFields() {
                         },
                         leadingIcon = {
                             if (leadingChecked) Icon(
-                                Icons.Filled.Favorite
+                                imageVector = Icons.Filled.Favorite, contentDescription = "Favorite"
                             )
                         },
                         trailingIcon = {
                             if (trailingChecked) Icon(
-                                Icons.Filled.Info
+                                imageVector =
+                                Icons.Filled.Info, contentDescription = ""
                             )
                         },
-                        isErrorValue = selectedOption == Option.Error,
+                        isError = selectedOption == Option.Error,
                         modifier = Modifier.widthIn(max = 300.dp)
                     )
                 TextFieldType.Outlined ->
                     OutlinedTextField(
                         value = text,
                         onValueChange = { text = it },
-                        singleLine = singleLineChecked,
+//                        singleLine = singleLineChecked,
                         label = {
                             val label =
                                 "Label" + if (selectedOption == Option.Error) "*" else ""
@@ -62,22 +63,23 @@ fun TextFields() {
                         },
                         leadingIcon = {
                             if (leadingChecked) Icon(
-                                Icons.Filled.Favorite
+                                imageVector = Icons.Filled.Favorite, contentDescription = "Favorite"
                             )
                         },
                         trailingIcon = {
                             if (trailingChecked) Icon(
-                                Icons.Filled.Info
+                                imageVector =
+                                Icons.Filled.Info, contentDescription = ""
                             )
                         },
-                        isErrorValue = selectedOption == Option.Error,
+                        isError = selectedOption == Option.Error,
                         modifier = Modifier.widthIn(max = 300.dp)
                     )
             }
         }
 
         Box(
-            Modifier.preferredHeight(80.dp)
+            Modifier.height(80.dp)
                 .align(Alignment.CenterHorizontally)
         ) {
             if (selectedOption == Option.None) {
@@ -152,7 +154,7 @@ fun TextFields() {
                 onCheckedChange = { /* TODO */ }
             )
 
-            Spacer(Modifier.preferredHeight(16.dp))
+            Spacer(Modifier.height(16.dp))
 
             Column {
                 Option.values().map { it.name }.forEach { text ->
@@ -191,13 +193,13 @@ fun TextFields() {
 
 @Composable
 fun ColumnScope.Title(title: String) {
-    Spacer(Modifier.preferredHeight(16.dp))
+    Spacer(Modifier.height(16.dp))
     Text(
         text = title,
         style = MaterialTheme.typography.h6,
         modifier = Modifier.align(Alignment.CenterHorizontally)
     )
-    Spacer(Modifier.preferredHeight(16.dp))
+    Spacer(Modifier.height(16.dp))
 }
 
 @Composable
@@ -208,9 +210,18 @@ fun OptionRow(
     enabled: Boolean = true
 ) {
     Row(Modifier.padding(start = 16.dp, top = 4.dp)) {
-        Checkbox(checked = checked, onCheckedChange = onCheckedChange, enabled = enabled, modifier = Modifier.align(Alignment.CenterVertically))
-        Spacer(Modifier.preferredWidth(16.dp))
-        Text(text = title, style = MaterialTheme.typography.body1, modifier = Modifier.align(Alignment.CenterVertically))
+        Checkbox(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            enabled = enabled,
+            modifier = Modifier.align(Alignment.CenterVertically)
+        )
+        Spacer(Modifier.width(16.dp))
+        Text(
+            text = title,
+            style = MaterialTheme.typography.body1,
+            modifier = Modifier.align(Alignment.CenterVertically)
+        )
     }
 }
 

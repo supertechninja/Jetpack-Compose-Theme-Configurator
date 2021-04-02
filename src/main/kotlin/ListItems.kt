@@ -1,34 +1,31 @@
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.savedinstancestate.savedInstanceState
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun ListItems() {
-    var addLabel by savedInstanceState { false }
-    var labelText by savedInstanceState { "" }
+    var addLabel by remember { mutableStateOf(false ) }
+    var labelText by remember { mutableStateOf("") }
 
-    var addSubLabel by savedInstanceState { false }
-    var subLabelText by savedInstanceState { "" }
+    var addSubLabel by remember { mutableStateOf(false ) }
+    var subLabelText by remember { mutableStateOf("") }
 
-    var addValue by savedInstanceState { false }
-    var valueText by savedInstanceState { "" }
+    var addValue by remember { mutableStateOf(false ) }
+    var valueText by remember { mutableStateOf("") }
 
-    var addSubValue by savedInstanceState { false }
-    var subValueText by savedInstanceState { "" }
+    var addSubValue by remember { mutableStateOf(false ) }
+    var subValueText by remember { mutableStateOf("") }
 
 
     Column {
-        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.preferredWidth(300.dp)) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.width(300.dp)) {
             Row {
                 Text(labelText)
                 Text(valueText)
@@ -40,7 +37,7 @@ fun ListItems() {
         }
 
         Row(modifier = Modifier.padding(top = 20.dp).align(Alignment.CenterHorizontally)) {
-            Column(modifier = Modifier.preferredWidth(200.dp)) {
+            Column(modifier = Modifier.width(200.dp)) {
                 OptionRow(
                     title = "Label",
                     checked = addLabel,
@@ -78,7 +75,7 @@ fun ListItems() {
                     )
                 }
             }
-            Column(modifier = Modifier.preferredWidth(200.dp)) {
+            Column(modifier = Modifier.width(200.dp)) {
                 OptionRow(
                     title = "Value",
                     checked = addValue,

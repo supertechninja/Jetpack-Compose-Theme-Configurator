@@ -1,10 +1,7 @@
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.savedinstancestate.savedInstanceState
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
@@ -13,8 +10,8 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun Buttons() {
     Column {
-        var selectedButton by savedInstanceState { ButtonType.Filled }
-        var buttonText by savedInstanceState { TextFieldValue("Sample Button Text") }
+        var selectedButton by remember { mutableStateOf(ButtonType.Filled) }
+        var buttonText by remember { mutableStateOf(TextFieldValue("Sample Button Text")) }
 
         val button: @Composable () -> Unit = @Composable {
             when (selectedButton) {
@@ -37,7 +34,7 @@ fun Buttons() {
         }
 
         Box(
-            Modifier.preferredHeight(80.dp)
+            Modifier.requiredHeight(80.dp)
                 .align(Alignment.CenterHorizontally)
         ) {
             button()

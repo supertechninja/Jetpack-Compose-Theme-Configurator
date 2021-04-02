@@ -13,39 +13,36 @@ fun BottomNavigation() {
     BottomAppBar {
         BottomNavigationItem(
             icon = {
-                Icon(imageVector = Icons.Default.Home)
+                Icon(imageVector = Icons.Default.Home, contentDescription = "Home")
             },
             selected = true,
             label = {
                 Text("Home")
             },
-            alwaysShowLabels = true,
             onClick = {
 
             }
         )
         BottomNavigationItem(
             icon = {
-                Icon(imageVector = Icons.Default.Info)
+                Icon(imageVector = Icons.Default.Info , contentDescription = "Exercises")
             },
             selected = true,
             label = {
                 Text("Exercises")
             },
-            alwaysShowLabels = true,
             onClick = {
 
             }
         )
         BottomNavigationItem(
             icon = {
-                Icon(imageVector = Icons.Default.Delete)
+                Icon(imageVector = Icons.Default.Delete, contentDescription = "Profile")
             },
             selected = true,
             label = {
                 Text("Profile")
             },
-            alwaysShowLabels = true,
             onClick = {
 
             }

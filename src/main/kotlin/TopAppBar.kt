@@ -1,14 +1,11 @@
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.savedinstancestate.savedInstanceState
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
@@ -18,10 +15,10 @@ import kotlin.random.Random
 
 @Composable
 fun TopAppBarDemo() {
-    var appBarTitle by savedInstanceState { TextFieldValue("") }
-    var navIcon by savedInstanceState { false }
-    var menuItems by savedInstanceState { false }
-    var numberOfMenuItems by savedInstanceState { 1f }
+    var appBarTitle by remember { mutableStateOf(TextFieldValue("")) }
+    var navIcon by remember { mutableStateOf(false) }
+    var menuItems by remember { mutableStateOf(false) }
+    var numberOfMenuItems by remember { mutableStateOf(1f) }
 
     Column {
         TopAppBar(
@@ -31,7 +28,7 @@ fun TopAppBarDemo() {
                     IconButton(onClick = {
 
                     }) {
-                        Icon(imageVector = Icons.Default.ArrowBack)
+                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "")
                     }
                 }
             },
@@ -42,7 +39,10 @@ fun TopAppBarDemo() {
                             onClick = {
 
                             }) {
-                            Icon(imageVector = listOfIcons.get(Random.nextInt(0, listOfIcons.size)))
+                            Icon(
+                                imageVector = listOfIcons.get(Random.nextInt(0, listOfIcons.size)),
+                                contentDescription = ""
+                            )
                         }
                     }
                 }
@@ -50,7 +50,7 @@ fun TopAppBarDemo() {
             elevation = 4.dp
         )
 
-        Spacer(modifier = Modifier.preferredHeight(20.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         OutlinedTextField(
             value = appBarTitle,
@@ -63,7 +63,7 @@ fun TopAppBarDemo() {
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
 
-        Spacer(modifier = Modifier.preferredHeight(20.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         OptionRow(
             title = "Navigation icon",

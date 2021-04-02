@@ -2,7 +2,8 @@ import androidx.compose.desktop.Window
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumnFor
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -13,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import theme.ComposeComponentsTheme
 
+@ExperimentalMaterialApi
 fun main() = Window {
     var selectedComponent by remember { mutableStateOf(Components.NONE) }
     var showThemeSettings = remember { mutableStateOf(false) }
@@ -30,16 +32,16 @@ fun main() = Window {
                             IconButton(onClick = {
                                 showThemeSettings.value = true
                             }) {
-                                Icon(imageVector = Icons.Default.Settings, tint = Color.White)
+                                Icon(imageVector = Icons.Default.Settings, tint = Color.White, contentDescription = "")
                             }
                         })
 
                 },
-                bodyContent = {
+                content = {
                     Box {
                         Row {
                             Column(
-                                modifier = Modifier.fillMaxHeight().preferredWidth(220.dp)
+                                modifier = Modifier.fillMaxHeight().width(220.dp)
                                     .background(MaterialTheme.colors.surface)
                                     .padding(bottom = 8.dp),
                                 horizontalAlignment = Alignment.Start
@@ -57,26 +59,31 @@ fun main() = Window {
 //                                    "Cards",
 //                                    "Menus"
 //                                )
-                                LazyColumnFor(items = Components.values().toList()) {
-                                    val backgroundColor =
-                                        if (it == selectedComponent) {
-                                            Color.LightGray
-                                        } else Color.White
-                                    if (it != Components.NONE) {
-                                        ListItem(modifier = Modifier.clickable(onClick = {
-                                            selectedComponent = it
-                                        }).background(color = backgroundColor)) {
-                                            Text(it.componentName)
+                                LazyColumn() {
+                                    items(Components.values().toList()) {
+                                        val backgroundColor =
+                                            if (it == selectedComponent) {
+                                                Color.LightGray
+                                            } else Color.White
+                                        if (it != Components.NONE) {
+                                            ListItem(
+                                                modifier = Modifier.clickable(onClick = {
+                                                    selectedComponent = it
+                                                }).background(color = backgroundColor),
+                                                text = {
+                                                    Text(it.componentName)
+                                                }
+                                            )
                                         }
                                     }
                                 }
                             }
-                            Divider(modifier = Modifier.preferredWidth(0.5.dp).fillMaxHeight())
+                            Divider(modifier = Modifier.width(0.5.dp).fillMaxHeight())
 
                             Column(
                                 modifier = Modifier.fillMaxWidth().padding(horizontal = 30.dp)
                             ) {
-                                Spacer(modifier = Modifier.preferredHeight(20.dp))
+                                Spacer(modifier = Modifier.height(20.dp))
 
                                 when (selectedComponent) {
                                     Components.NONE -> {

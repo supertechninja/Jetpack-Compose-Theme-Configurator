@@ -22,6 +22,12 @@ class ColorState(
 )
 
 @Composable
+fun rememberColorState() = ColorState(
+    color = Color.Yellow,
+    updateColor = {}
+)
+
+@Composable
 fun ColorPicker(colorState: ColorState) {
     var redValue by remember { mutableStateOf(colorState.color.red) }
     var greenValue by remember { mutableStateOf(colorState.color.green) }

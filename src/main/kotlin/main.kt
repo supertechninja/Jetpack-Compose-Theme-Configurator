@@ -1,3 +1,4 @@
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.desktop.Window
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import theme.ComposeComponentsTheme
 
+@ExperimentalAnimationApi
 @ExperimentalMaterialApi
 fun main() = Window {
     var selectedComponent by remember { mutableStateOf(Components.NONE) }

@@ -16,17 +16,6 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import kotlin.math.roundToInt
 
-class ColorState(
-    val color: Color,
-    val updateColor: (Color) -> Unit
-)
-
-@Composable
-fun rememberColorState() = ColorState(
-    color = Color.Yellow,
-    updateColor = {}
-)
-
 @Composable
 fun ColorPicker(colorState: ColorState) {
     var redValue by remember { mutableStateOf(colorState.color.red) }
@@ -34,8 +23,9 @@ fun ColorPicker(colorState: ColorState) {
     var blueValue by remember { mutableStateOf(colorState.color.blue) }
     var alphaValue by remember { mutableStateOf(colorState.color.alpha) }
     var colorInput by remember { mutableStateOf("#${colorState.color.toHexString()}") }
-    Dialog(onDismissRequest =
-    { }, properties = DialogProperties(size = IntSize(400,525))
+    Dialog(
+        onDismissRequest =
+        { }, properties = DialogProperties(size = IntSize(400, 525))
     ) {
         Column(
             modifier = Modifier.fillMaxWidth().fillMaxHeight()
@@ -45,23 +35,8 @@ fun ColorPicker(colorState: ColorState) {
             Row(
                 modifier = Modifier.fillMaxWidth().padding(start = 12.dp),
                 horizontalArrangement = Arrangement.Start
-            ) { Text(text = "Color Picker", style = MaterialTheme.typography.h5, color = Color.Black) }
-            Row(
-                modifier =
-                Modifier.fillMaxWidth().padding(start = 12.dp, top = 8.dp), horizontalArrangement = Arrangement.Start
             ) {
-//                OutlinedTextField(
-//                    value = colorInput,
-//                    onValueChange = { colorInput = it },
-//                    label = { Text("Color Hex Code") },
-//                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-//                    keyboardActions = KeyboardActions(onDone = {
-//                        val color: Int = android.graphics.Color.parseColor(colorInput)
-//                        val newColorsFromString = Color(color) redValue = newColorsFromString . red blueValue =
-//                            newColorsFromString.blue greenValue = newColorsFromString . green alphaValue =
-//                            newColorsFromString.alpha
-//                    })
-//                )
+                Text(text = "Color Picker", style = MaterialTheme.typography.h5, color = Color.Black)
             }
             val newColor = Color(redValue, greenValue, blueValue, alphaValue)
             ColorSlider(

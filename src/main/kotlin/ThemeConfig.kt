@@ -3,7 +3,6 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -17,16 +16,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.text.input.TextFieldValue
 
 @ExperimentalAnimationApi
 @Composable
-fun ThemeConfig(showThemeSettings: MutableState<Boolean>) {
+fun ThemeConfig(showThemeSettings: MutableState<Boolean>, primaryColorState: ColorState) {
+    var localPrimaryColorState = primaryColorState
+
     Scaffold(
         topBar = {
             TopAppBar(title = {
                 Text("Theme Settings", color = Color.White)
-            }, backgroundColor = Color.Black,
+            },
                 navigationIcon = {
                     if (showThemeSettings.value) {
                         IconButton(onClick = {
@@ -40,10 +40,7 @@ fun ThemeConfig(showThemeSettings: MutableState<Boolean>) {
         },
         content = {
             var showDialog by remember { mutableStateOf(false) }
-            var colorState = rememberColorState()
-
             Column(modifier = Modifier.fillMaxSize()) {
-                val colorPrimary = Color.Blue
                 Row(
                     modifier = Modifier.padding(16.dp).wrapContentHeight(),
                     verticalAlignment = Alignment.CenterVertically
@@ -51,21 +48,24 @@ fun ThemeConfig(showThemeSettings: MutableState<Boolean>) {
                     Surface(
                         modifier = Modifier.size(48.dp).clickable(
                             onClick = {
-                                colorState = ColorState(color = colorPrimary, updateColor = {
-                                    showDialog = false
-                                })
+                                localPrimaryColorState = ColorState(
+                                    color = primaryColorState.color,
+                                    updateColor = {
+                                        primaryColorState.updateColor(it)
+                                        showDialog = false
+                                    })
                                 showDialog = true
                             }),
                         shape = CircleShape,
-                        color = MaterialTheme.colors.primary
+                        color = primaryColorState.color
                     ) {}
 
-                    Text("Primary Color")
+                    Text("Primary Color", modifier = Modifier.padding(horizontal = 8.dp))
                 }
             }
 
             AnimatedVisibility(showDialog) {
-                ColorPicker(colorState)
+                ColorPicker(localPrimaryColorState)
             }
         })
 }

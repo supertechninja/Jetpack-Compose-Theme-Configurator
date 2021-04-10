@@ -1,7 +1,4 @@
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -15,42 +12,92 @@ import kotlin.random.Random
 
 @Composable
 fun TopAppBarDemo() {
-    var appBarTitle by remember { mutableStateOf(TextFieldValue("")) }
+    var appBarTitle by remember { mutableStateOf(TextFieldValue("App Bar Title")) }
     var navIcon by remember { mutableStateOf(false) }
     var menuItems by remember { mutableStateOf(false) }
     var numberOfMenuItems by remember { mutableStateOf(1f) }
+    var showDropDownMenu by remember { mutableStateOf(false) }
 
     Column {
-        TopAppBar(
-            title = { Text(appBarTitle.text) },
-            navigationIcon = {
-                if (navIcon) {
-                    IconButton(onClick = {
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopEnd) {
+            TopAppBar(
+                title = { Text(appBarTitle.text) },
+                navigationIcon = {
+                    if (navIcon) {
+                        IconButton(onClick = {
 
-                    }) {
-                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "")
+                        }) {
+                            Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "")
+                        }
                     }
-                }
-            },
-            actions = {
-                if (menuItems) {
-                    repeat(numberOfMenuItems.toInt()) {
-                        IconButton(
-                            onClick = {
+                },
+                actions = {
+                    if (menuItems) {
+                        if (numberOfMenuItems.toInt() <= 3) {
+                            repeat(numberOfMenuItems.toInt()) {
+                                IconButton(
+                                    onClick = {
 
-                            }) {
-                            Icon(
-                                imageVector = listOfIcons.get(Random.nextInt(0, listOfIcons.size)),
-                                contentDescription = ""
-                            )
+                                    }) {
+                                    Icon(
+                                        imageVector = listOfIcons[it],
+                                        contentDescription = ""
+                                    )
+                                }
+                            }
+                        } else {
+                            repeat(2) {
+                                IconButton(
+                                    onClick = {
+
+                                    }) {
+                                    Icon(
+                                        imageVector = listOfIcons[it],
+                                        contentDescription = ""
+                                    )
+                                }
+                            }
+
+                            IconButton(
+                                onClick = {
+                                    showDropDownMenu = !showDropDownMenu
+                                }) {
+                                Icon(
+                                    imageVector = Icons.Default.MoreVert,
+                                    contentDescription = ""
+                                )
+                            }
+                        }
+                    }
+                },
+                elevation = 8.dp
+            )
+
+            if (showDropDownMenu) {
+                Row(horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.Top) {
+                    DropdownMenu(
+                        expanded = true,
+                        onDismissRequest = {
+                            showDropDownMenu = !showDropDownMenu
+
+                        },
+                    ) {
+                        var index = 3
+                        repeat(numberOfMenuItems.toInt() - 2) {
+                            Row() {
+                                Text(
+                                    text = listOfIcons[index].name,
+                                    modifier = Modifier.padding(horizontal = 32.dp, vertical = 16.dp)
+                                )
+                            }
+                            index = index.inc()
                         }
                     }
                 }
-            },
-            elevation = 4.dp
-        )
+            }
+        }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(120.dp))
 
         OutlinedTextField(
             value = appBarTitle,
@@ -80,14 +127,14 @@ fun TopAppBarDemo() {
         if (menuItems) {
             Text("Number of Menu Items:", modifier = Modifier.padding(top = 20.dp, start = 32.dp))
 
-            val range = 1f..3f
+            val range = 1f..5f
             Slider(
                 value = numberOfMenuItems,
                 onValueChange = {
                     numberOfMenuItems = it
                 },
                 valueRange = range,
-                steps = 1,
+                steps = 3,
                 modifier = Modifier.padding(horizontal = 32.dp)
             )
         }
@@ -98,7 +145,7 @@ fun TopAppBarDemo() {
 val listOfIcons =
     mutableListOf(
         Icons.Default.Add,
-        Icons.Default.Check,
+        Icons.Default.Delete,
         Icons.Default.Done,
         Icons.Default.Edit,
         Icons.Default.Info,

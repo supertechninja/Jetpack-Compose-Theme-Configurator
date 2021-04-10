@@ -1,10 +1,13 @@
 import androidx.compose.animation.*
-import androidx.compose.animation.core.tween
 import androidx.compose.desktop.Window
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
@@ -15,18 +18,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import theme.Blue500
-import theme.ComposeComponentsTheme
-import theme.Yellow700
+import theme.*
 
+@ExperimentalFoundationApi
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
-fun main() = Window {
+fun main() = Window(title = "Material Theme Config", resizable = true) {
     var selectedComponent by remember { mutableStateOf(Components.NONE) }
-    var showThemeSettings by remember { mutableStateOf(false) }
+    var backdropScaffoldState = rememberBackdropScaffoldState(BackdropValue.Concealed)
+    val coroutineScope = rememberCoroutineScope()
+    var showThemeSettings by remember { mutableStateOf(backdropScaffoldState.isRevealed) }
+
     var showDialog by remember { mutableStateOf(false) }
+    var showDrawer by remember { mutableStateOf(true) }
 
     var primaryColor by remember { mutableStateOf(Blue500) }
     val primaryColorState = rememberColorState(color = primaryColor, updateColor = {
@@ -34,27 +41,53 @@ fun main() = Window {
         showDialog = false
     })
 
-    var secondaryColor by remember { mutableStateOf(Yellow700) }
+    var primaryAccentColor by remember { mutableStateOf(Blue800) }
+    val primaryAccentColorState = rememberColorState(color = primaryAccentColor, updateColor = {
+        primaryAccentColor = it
+        showDialog = false
+    })
+
+    var secondaryColor by remember { mutableStateOf(Yellow600) }
     val secondaryColorState = rememberColorState(color = secondaryColor, updateColor = {
         secondaryColor = it
         showDialog = false
     })
 
+    var secondaryAccentColor by remember { mutableStateOf(Yellow800) }
+    val secondaryAccentColorState = rememberColorState(color = secondaryAccentColor, updateColor = {
+        secondaryAccentColor = it
+        showDialog = false
+    })
+
+    val listOfColorStates =
+        listOf(
+            Pair("Primary", primaryColorState),
+            Pair("Primary Variant", primaryAccentColorState),
+            Pair("Secondary", secondaryColorState),
+            Pair("Secondary Variant", secondaryAccentColorState)
+        )
+
     var colorStateToUpdate = rememberColorState {}
 
     var title = if (showThemeSettings) "Theme" else "Compose Components"
 
-    var backdropScaffoldState = rememberBackdropScaffoldState(BackdropValue.Concealed)
-    val coroutineScope = rememberCoroutineScope()
-
-//    val darkTheme = isSystemInDarkTheme()
     var isDarkThemeEnabled by remember { mutableStateOf(false) }
 
     ComposeComponentsTheme(
         if (isDarkThemeEnabled) {
-            getDarkColorPalette(primaryColor = primaryColor, secondaryColor = secondaryColor)
+            getDarkColorPalette(
+                primaryColor = primaryColor,
+                secondaryColor = secondaryColor,
+                primaryAccentColor = primaryAccentColor,
+                secondaryAccentColor = secondaryAccentColor
+            )
         } else {
-            getLightColorPalette(primaryColor = primaryColor, secondaryColor = secondaryColor)
+            getLightColorPalette(
+                primaryColor = primaryColor,
+                secondaryColor = secondaryColor,
+                primaryAccentColor = primaryAccentColor,
+                secondaryAccentColor = secondaryAccentColor
+            )
         }
     ) {
         BackdropScaffold(
@@ -67,6 +100,13 @@ fun main() = Window {
                         Text(text = title, color = Color.White)
                     },
                     elevation = 8.dp,
+                    navigationIcon = {
+                        IconButton(onClick = {
+                            showDrawer = !showDrawer
+                        }) {
+                            Icon(imageVector = Icons.Default.Menu, tint = Color.White, contentDescription = "")
+                        }
+                    },
                     actions = {
                         IconButton(onClick = {
                             showThemeSettings = !showThemeSettings
@@ -80,13 +120,14 @@ fun main() = Window {
                                 }
                             }
                         }) {
-                            Icon(imageVector = Icons.Default.Settings, tint = Color.White, contentDescription = "")
+                            Icon(imageVector = Icons.Default.ColorLens, tint = Color.White, contentDescription = "")
                         }
 
+                        val themeMode = if (isDarkThemeEnabled) Icons.Default.LightMode else Icons.Default.DarkMode
                         IconButton(onClick = {
                             isDarkThemeEnabled = !isDarkThemeEnabled
                         }) {
-                            Icon(imageVector = Icons.Default.DarkMode, tint = Color.White, contentDescription = "")
+                            Icon(imageVector = themeMode, tint = Color.White, contentDescription = "")
                         }
                     }
                 )
@@ -96,32 +137,40 @@ fun main() = Window {
             frontLayerContent = {
                 Box(modifier = Modifier.fillMaxSize()) {
                     Row {
-                        Column(
-                            modifier = Modifier.fillMaxHeight().width(220.dp)
-                                .background(MaterialTheme.colors.surface)
-                                .padding(bottom = 8.dp),
-                            horizontalAlignment = Alignment.Start
-                        ) {
-                            LazyColumn() {
-                                items(Components.values().toList()) {
-                                    val backgroundColor =
-                                        if (it == selectedComponent) {
-                                            Color.LightGray
-                                        } else MaterialTheme.colors.surface
-                                    if (it != Components.NONE) {
-                                        ListItem(
-                                            modifier = Modifier.clickable(onClick = {
-                                                selectedComponent = it
-                                            }).background(color = backgroundColor),
-                                            text = {
-                                                Text(it.componentName, color = MaterialTheme.colors.onSurface)
-                                            }
-                                        )
+                        AnimatedVisibility(showDrawer) {
+                            Column(
+                                modifier = Modifier.fillMaxHeight().width(220.dp)
+                                    .background(MaterialTheme.colors.surface)
+                                    .padding(bottom = 8.dp),
+                                horizontalAlignment = Alignment.Start
+                            ) {
+                                LazyColumn() {
+                                    items(Components.values().toList()) {
+                                        val backgroundColor =
+                                            if (it == selectedComponent) {
+                                                Color.LightGray
+                                            } else MaterialTheme.colors.surface
+                                        if (it != Components.NONE) {
+                                            ListItem(
+                                                modifier = Modifier.clickable(onClick = {
+                                                    selectedComponent = it
+                                                }).background(color = backgroundColor),
+                                                text = {
+                                                    Text(it.componentName, color = MaterialTheme.colors.onSurface)
+                                                }
+                                            )
+                                        }
                                     }
                                 }
                             }
                         }
-                        Divider(modifier = Modifier.width(0.5.dp).fillMaxHeight())
+
+                        if (showDrawer) {
+                            Divider(
+                                modifier = Modifier.width(1.dp).fillMaxHeight(),
+                                color = MaterialTheme.colors.onBackground
+                            )
+                        }
 
                         Column(
                             modifier = Modifier.fillMaxWidth().padding(horizontal = 30.dp)
@@ -144,12 +193,17 @@ fun main() = Window {
                                 Components.LISTITEMS -> {
                                     ListItems()
                                 }
-                                Components.TABS -> TODO()
+                                Components.TABS -> {
+                                    TabsDemo()
+                                }
                                 Components.BOTTOM_NAV -> {
+                                    BottomNavigationDemo()
                                 }
                                 Components.FAB -> TODO()
                                 Components.DIALOGS -> TODO()
-                                Components.BOTTOM_APP_BAR -> TODO()
+                                Components.BOTTOM_APP_BAR -> {
+
+                                }
                                 Components.CARDS -> TODO()
                                 Components.MENUS -> TODO()
                             }
@@ -162,50 +216,36 @@ fun main() = Window {
                 }
             },
             backLayerContent = {
-                Column(
-                    modifier = Modifier.fillMaxWidth().wrapContentHeight()
-                        .background(color = MaterialTheme.colors.surface)
+                LazyVerticalGrid(
+                    cells = GridCells.Fixed(4),
+                    modifier = Modifier.background(color = MaterialTheme.colors.surface)
                 ) {
-                    Row(
-                        modifier = Modifier.padding(16.dp).wrapContentHeight(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Surface(
-                            modifier = Modifier.size(48.dp).clickable(
-                                onClick = {
-                                    colorStateToUpdate = primaryColorState
-                                    showDialog = true
-                                }),
-                            shape = CircleShape,
-                            color = primaryColorState.color
-                        ) {}
+                    items(listOfColorStates) {
+                        Box(
+                            modifier = Modifier.padding(16.dp).wrapContentHeight(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Surface(
+                                    modifier = Modifier.size(48.dp).clickable(
+                                        onClick = {
+                                            colorStateToUpdate = it.second
+                                            showDialog = true
+                                        }),
+                                    shape = CircleShape,
+                                    elevation = 8.dp,
+                                    border = BorderStroke(2.dp, Color.White),
+                                    color = it.second.color
+                                ) {}
 
-                        Text(
-                            "Primary Color",
-                            modifier = Modifier.padding(horizontal = 8.dp),
-                            color = MaterialTheme.colors.onSurface
-                        )
-                    }
-
-                    Row(
-                        modifier = Modifier.padding(16.dp).wrapContentHeight(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Surface(
-                            modifier = Modifier.size(48.dp).clickable(
-                                onClick = {
-                                    colorStateToUpdate = secondaryColorState
-                                    showDialog = true
-                                }),
-                            shape = CircleShape,
-                            color = secondaryColorState.color
-                        ) {}
-
-                        Text(
-                            "Secondary Color",
-                            modifier = Modifier.padding(horizontal = 8.dp),
-                            color = MaterialTheme.colors.onSurface
-                        )
+                                Text(
+                                    it.first,
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
+                                    textAlign = TextAlign.Center,
+                                    color = MaterialTheme.colors.onSurface
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -231,9 +271,9 @@ private enum class Components(val componentName: String) {
     TOP_APP_BAR("Top App Bar"),
     BUTTONS("Buttons"),
     TEXTFIELDS("TextFields"),
-    LISTITEMS("ListItems"),
-    TABS("Tabs"),
     BOTTOM_NAV("Bottom Navigation"),
+    TABS("Tabs"),
+    LISTITEMS("ListItems"),
     FAB("Floating Action Buttons"),
     DIALOGS("Dialogs"),
     BOTTOM_APP_BAR("Bottom App Bar"),
@@ -241,16 +281,26 @@ private enum class Components(val componentName: String) {
     MENUS("Menus")
 }
 
-fun getLightColorPalette(primaryColor: Color, secondaryColor: Color) = lightColors(
+fun getLightColorPalette(
+    primaryColor: Color,
+    secondaryColor: Color,
+    primaryAccentColor: Color,
+    secondaryAccentColor: Color
+) = lightColors(
     primary = primaryColor,
-    primaryVariant = primaryColor,
+    primaryVariant = primaryAccentColor,
     secondary = secondaryColor,
-    secondaryVariant = primaryColor,
+    secondaryVariant = secondaryAccentColor,
 )
 
-fun getDarkColorPalette(primaryColor: Color, secondaryColor: Color) = darkColors(
+fun getDarkColorPalette(
+    primaryColor: Color,
+    secondaryColor: Color,
+    primaryAccentColor: Color,
+    secondaryAccentColor: Color
+) = darkColors(
     primary = primaryColor,
-    primaryVariant = primaryColor,
+    primaryVariant = primaryAccentColor,
     secondary = secondaryColor,
-    secondaryVariant = primaryColor,
+    secondaryVariant = secondaryAccentColor,
 )

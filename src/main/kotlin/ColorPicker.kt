@@ -24,8 +24,10 @@ fun ColorPicker(colorState: ColorState) {
     var alphaValue by remember { mutableStateOf(colorState.color.alpha) }
     var colorInput by remember { mutableStateOf("#${colorState.color.toHexString()}") }
     Dialog(
-        onDismissRequest =
-        { }, properties = DialogProperties(size = IntSize(400, 525))
+        onDismissRequest = {
+            colorState.updateColor(colorState.color)
+        },
+        properties = DialogProperties(title = "Color Picker", size = IntSize(400, 525))
     ) {
         Column(
             modifier = Modifier.fillMaxWidth().fillMaxHeight()

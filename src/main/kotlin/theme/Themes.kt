@@ -45,3 +45,4 @@ fun ComposeComponentsTheme(
         shapes = JetchatShapes
     )
 }
+

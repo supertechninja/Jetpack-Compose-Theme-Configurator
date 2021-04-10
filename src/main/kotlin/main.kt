@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -18,10 +19,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import kotlinx.coroutines.launch
 import theme.*
+import java.awt.Toolkit
+import java.awt.datatransfer.StringSelection
+import java.lang.StringBuilder
 
 @ExperimentalFoundationApi
 @ExperimentalAnimationApi
@@ -34,6 +42,7 @@ fun main() = Window(title = "Material Theme Config", resizable = true) {
 
     var showDialog by remember { mutableStateOf(false) }
     var showDrawer by remember { mutableStateOf(true) }
+    var showExportTheme by remember { mutableStateOf(false) }
 
     var primaryColor by remember { mutableStateOf(Blue500) }
     val primaryColorState = rememberColorState(color = primaryColor, updateColor = {
@@ -213,37 +222,126 @@ fun main() = Window(title = "Material Theme Config", resizable = true) {
                     AnimatedVisibility(showDialog) {
                         ColorPicker(colorStateToUpdate)
                     }
+
+                    AnimatedVisibility(showExportTheme) {
+                        Dialog(
+                            onDismissRequest = {
+                                showExportTheme = !showExportTheme
+                            }, properties =
+                            DialogProperties(
+                                title = "Export Theme",
+                                size = IntSize(400, 425)
+                            )
+                        ) {
+                            Column(modifier = Modifier.wrapContentHeight()) {
+                                val themeCode = exportTheme(
+                                    primaryColor,
+                                    primaryAccentColor,
+                                    secondaryColor,
+                                    secondaryAccentColor
+                                ).toString()
+
+                                var isTextCopied by remember { mutableStateOf(false) }
+                                val buttonText = if (isTextCopied) "COPIED to Clipboard" else "Copy to Clipboard"
+
+                                Row(
+                                    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                                    horizontalArrangement = Arrangement.End,
+                                ) {
+                                    TextButton(
+                                        onClick = {
+                                            Toolkit.getDefaultToolkit()
+                                                .systemClipboard
+                                                .setContents(
+                                                    StringSelection(themeCode),
+                                                    null
+                                                )
+                                            isTextCopied = !isTextCopied
+                                        }
+                                    ) {
+                                        Text(
+                                            buttonText,
+                                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                                        )
+                                    }
+                                }
+
+                                Surface(
+                                    color = Color.DarkGray,
+                                    shape = RoundedCornerShape(10),
+                                    elevation = 8.dp,
+                                    modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(horizontal = 16.dp)
+                                ) {
+                                    Text(
+                                        text = exportTheme(
+                                            primaryColor,
+                                            primaryAccentColor,
+                                            secondaryColor,
+                                            secondaryAccentColor
+                                        ).toString(),
+                                        modifier = Modifier.padding(16.dp),
+                                        color = Color.White,
+                                        style = MaterialTheme.typography.caption
+                                    )
+                                }
+
+                                Row(modifier = Modifier.fillMaxWidth().padding(top = 4.dp), horizontalArrangement = Arrangement.End) {
+                                    TextButton(
+                                        onClick = {
+                                            showExportTheme = !showExportTheme
+                                        }
+                                    ) {
+                                        Text("OK")
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             },
             backLayerContent = {
-                LazyVerticalGrid(
-                    cells = GridCells.Fixed(4),
-                    modifier = Modifier.background(color = MaterialTheme.colors.surface)
-                ) {
-                    items(listOfColorStates) {
-                        Box(
-                            modifier = Modifier.padding(16.dp).wrapContentHeight(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Surface(
-                                    modifier = Modifier.size(48.dp).clickable(
-                                        onClick = {
-                                            colorStateToUpdate = it.second
-                                            showDialog = true
-                                        }),
-                                    shape = CircleShape,
-                                    elevation = 8.dp,
-                                    border = BorderStroke(2.dp, Color.White),
-                                    color = it.second.color
-                                ) {}
+                Column {
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                            .background(color = MaterialTheme.colors.surface),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        TextButton(onClick = {
+                            showExportTheme = !showExportTheme
+                        }, modifier = Modifier.padding(top = 8.dp)) {
+                            Text("Export Theme")
+                        }
+                    }
 
-                                Text(
-                                    it.first,
-                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
-                                    textAlign = TextAlign.Center,
-                                    color = MaterialTheme.colors.onSurface
-                                )
+                    LazyVerticalGrid(
+                        cells = GridCells.Fixed(4),
+                        modifier = Modifier.background(color = MaterialTheme.colors.surface)
+                    ) {
+                        items(listOfColorStates) {
+                            Box(
+                                modifier = Modifier.padding(16.dp).wrapContentHeight(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                    Surface(
+                                        modifier = Modifier.size(48.dp).clickable(
+                                            onClick = {
+                                                colorStateToUpdate = it.second
+                                                showDialog = true
+                                            }),
+                                        shape = CircleShape,
+                                        elevation = 8.dp,
+                                        border = BorderStroke(2.dp, Color.White),
+                                        color = it.second.color
+                                    ) {}
+
+                                    Text(
+                                        it.first,
+                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
+                                        textAlign = TextAlign.Center,
+                                        color = MaterialTheme.colors.onSurface
+                                    )
+                                }
                             }
                         }
                     }
@@ -304,3 +402,37 @@ fun getDarkColorPalette(
     secondary = secondaryColor,
     secondaryVariant = secondaryAccentColor,
 )
+
+fun exportTheme(
+    primaryColor: Color,
+    primaryAccentColor: Color,
+    secondaryColor: Color,
+    secondaryAccentColor: Color
+): StringBuilder {
+    val stringBuilder = StringBuilder()
+
+    stringBuilder.append("val primaryColor = Color(0x${primaryColor.toHexString()})\n")
+    stringBuilder.append("val primaryVariantColor = Color(0x${primaryAccentColor.toHexString()})\n")
+    stringBuilder.append("val secondaryColor = Color(0x${secondaryColor.toHexString()})\n")
+    stringBuilder.append("val secondaryColorVariant = Color(0x${secondaryAccentColor.toHexString()})\n\n")
+
+    stringBuilder.append("val lightColorPalette = lightColors(\n")
+    stringBuilder.append("    primary = primaryColor,\n")
+    stringBuilder.append("    primaryVariant = primaryVariantColor,\n")
+    stringBuilder.append("    secondary = secondaryColor,\n")
+    stringBuilder.append("    secondaryVariant = secondaryColorVariant\n)\n\n")
+
+    stringBuilder.append("@Composable\n")
+    stringBuilder.append("fun YourThemeName(\n")
+    stringBuilder.append("    colors: Colors = lightColorPalette,\n")
+    stringBuilder.append("    content: @Composable () -> Unit\n")
+    stringBuilder.append(") {\n")
+    stringBuilder.append("    MaterialTheme(\n")
+    stringBuilder.append("    colors = colors,\n")
+    stringBuilder.append("    content = content,\n")
+    stringBuilder.append("    shapes = JetchatShapes\n")
+    stringBuilder.append("    )\n")
+    stringBuilder.append("}\n")
+
+    return stringBuilder
+}

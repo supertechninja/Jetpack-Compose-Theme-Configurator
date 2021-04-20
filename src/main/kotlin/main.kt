@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import theme.*
 import java.awt.Toolkit
@@ -101,8 +102,10 @@ fun main() = Window(title = "Material Theme Config", resizable = true) {
     ) {
         BackdropScaffold(
             scaffoldState = backdropScaffoldState,
-            frontLayerShape = RectangleShape,
+            frontLayerShape = RoundedCornerShape(20.dp),
             frontLayerScrimColor = Color.Transparent,
+            backLayerBackgroundColor = Color.White,
+            backLayerContentColor = MaterialTheme.colors.primary.copy(alpha = .4f),
             appBar = {
                 TopAppBar(
                     title = {
@@ -347,6 +350,7 @@ fun main() = Window(title = "Material Theme Config", resizable = true) {
                     }
                 }
             }
+
         )
     }
 }
@@ -430,7 +434,7 @@ fun exportTheme(
     stringBuilder.append("    MaterialTheme(\n")
     stringBuilder.append("    colors = colors,\n")
     stringBuilder.append("    content = content,\n")
-    stringBuilder.append("    shapes = JetchatShapes\n")
+    stringBuilder.append("    shapes = shapes\n")
     stringBuilder.append("    )\n")
     stringBuilder.append("}\n")
 

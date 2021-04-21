@@ -207,7 +207,7 @@ fun OptionRow(
     title: String,
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
-    enabled: Boolean = true
+    enabled: Boolean = true,
 ) {
     Row(Modifier.padding(start = 16.dp, top = 4.dp)) {
         Checkbox(

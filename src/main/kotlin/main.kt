@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import components.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import theme.*
@@ -211,13 +212,15 @@ fun main() = Window(title = "Material Theme Config", resizable = true) {
                                 Components.BOTTOM_NAV -> {
                                     BottomNavigationDemo()
                                 }
-                                Components.FAB -> TODO()
-                                Components.DIALOGS -> TODO()
-                                Components.BOTTOM_APP_BAR -> {
-
+                                Components.FAB -> {
+                                    FloatingActionButtonDemo()
                                 }
-                                Components.CARDS -> TODO()
-                                Components.MENUS -> TODO()
+                                Components.DIALOGS -> {
+                                    DialogDemo()
+                                }
+                                Components.BOTTOM_APP_BAR -> {
+                                    BottomAppBarDemo()
+                                }
                             }
                         }
                     }
@@ -288,7 +291,10 @@ fun main() = Window(title = "Material Theme Config", resizable = true) {
                                     )
                                 }
 
-                                Row(modifier = Modifier.fillMaxWidth().padding(top = 4.dp), horizontalArrangement = Arrangement.End) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
+                                    horizontalArrangement = Arrangement.End
+                                ) {
                                     TextButton(
                                         onClick = {
                                             showExportTheme = !showExportTheme

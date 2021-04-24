@@ -22,6 +22,7 @@ jobs:
     strategy:
       matrix:
         os: [ 'ubuntu-latest', 'macos-latest', 'windows-latest' ]
+        path: [ '/home/runner/work/Jetpack-Compose-Theme-Configurator/Jetpack-Compose-Theme-Configurator/build/compose/binaries/main/deb/kotlinjvmcomposedesktopapplication_1.0.0-1_amd64.deb','/Users/runner/work/Jetpack-Compose-Theme-Configurator/Jetpack-Compose-Theme-Configurator/build/compose/binaries/main/dmg/KotlinJvmComposeDesktopApplication-1.0.0.dmg','D:\a\Jetpack-Compose-Theme-Configurator\Jetpack-Compose-Theme-Configurator\build\compose\binaries\main\msi\KotlinJvmComposeDesktopApplication-1.0.0.msi']
     name: (${{ matrix.os }}) desktop-configurator
     steps:
       - uses: actions/checkout@v2
@@ -30,8 +31,8 @@ jobs:
           distribution: 'adopt'
           java-version: '15'
       - run: ./gradlew package
-#       - uses: actions/upload-artifact@v2
-#         with:
-#           name: compose-configurator-desktop-application
-#           path: /home/runner/work/Jetpack-Compose-Theme-Configurator/Jetpack-Compose-Theme-Configurator/build/compose/binaries/main/deb/kotlinjvmcomposedesktopapplication_1.0.0-1_amd64.deb
+      - uses: actions/upload-artifact@v2
+        with:
+          name: compose-configurator-desktop-application
+          path: ${{ matrix.path }}
 

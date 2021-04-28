@@ -163,16 +163,14 @@ fun main() = Window(title = "Material Theme Config", resizable = true) {
                                             if (it == selectedComponent) {
                                                 Color.LightGray
                                             } else MaterialTheme.colors.surface
-                                        if (it != Components.NONE) {
-                                            ListItem(
-                                                modifier = Modifier.clickable(onClick = {
-                                                    selectedComponent = it
-                                                }).background(color = backgroundColor),
-                                                text = {
-                                                    Text(it.componentName, color = MaterialTheme.colors.onSurface)
-                                                }
-                                            )
-                                        }
+                                        ListItem(
+                                            modifier = Modifier.clickable(onClick = {
+                                                selectedComponent = it
+                                            }).background(color = backgroundColor),
+                                            text = {
+                                                Text(it.componentName, color = MaterialTheme.colors.onSurface)
+                                            }
+                                        )
                                     }
                                 }
                             }
@@ -192,7 +190,7 @@ fun main() = Window(title = "Material Theme Config", resizable = true) {
 
                             when (selectedComponent) {
                                 Components.NONE -> {
-
+                                    AllComponentsDemo()
                                 }
                                 Components.TOP_APP_BAR -> {
                                     TopAppBarDemo()
@@ -375,8 +373,9 @@ fun rememberColorState(
 )
 
 private enum class Components(val componentName: String) {
-    NONE(""),
+    NONE("All Components"),
     TOP_APP_BAR("Top App Bar"),
+    BOTTOM_APP_BAR("Bottom App Bar"),
     BUTTONS("Buttons"),
     TEXTFIELDS("TextFields"),
     BOTTOM_NAV("Bottom Navigation"),
@@ -384,9 +383,8 @@ private enum class Components(val componentName: String) {
     LISTITEMS("ListItems"),
     FAB("Floating Action Buttons"),
     DIALOGS("Dialogs"),
-    BOTTOM_APP_BAR("Bottom App Bar"),
-    CARDS("Cards"),
-    MENUS("Menus")
+//    CARDS("Cards"),
+//    MENUS("Menus")
 }
 
 fun getLightColorPalette(

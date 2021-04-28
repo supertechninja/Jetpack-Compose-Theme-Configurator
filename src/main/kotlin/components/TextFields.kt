@@ -209,7 +209,7 @@ fun OptionRow(
     onCheckedChange: (Boolean) -> Unit,
     enabled: Boolean = true,
 ) {
-    Row(Modifier.padding(start = 16.dp, top = 4.dp)) {
+    Row(Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp)) {
         Checkbox(
             checked = checked,
             onCheckedChange = onCheckedChange,

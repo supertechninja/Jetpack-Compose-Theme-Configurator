@@ -18,19 +18,21 @@ fun TopAppBarDemo() {
     var numberOfMenuItems by remember { mutableStateOf(1f) }
     var showDropDownMenu by remember { mutableStateOf(false) }
 
+    val navIconComposable: @Composable (() -> Unit)? = if (navIcon) {
+        @Composable {
+            IconButton(
+                onClick = {}
+            ) {
+                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "")
+            }
+        }
+    } else null
+
     Column {
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopEnd) {
             TopAppBar(
                 title = { Text(appBarTitle.text) },
-                navigationIcon = {
-                    if (navIcon) {
-                        IconButton(onClick = {
-
-                        }) {
-                            Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "")
-                        }
-                    }
-                },
+                navigationIcon = navIconComposable,
                 actions = {
                     if (menuItems) {
                         if (numberOfMenuItems.toInt() <= 3) {

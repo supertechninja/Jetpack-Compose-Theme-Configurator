@@ -8,13 +8,13 @@ Once you have the Theme they way you like you can export that theme to your @Com
 
 ### Screenshots ###
 
-![MainScreen](/demo/mainscreen.png)
+![MainScreen](/demo/mainscreen_demo.png)
 
-![Backdrop](/demo/backdrop_extended.png)
+![Backdrop](/demo/backdrop_extended_demo.png)
 
-![Main Screen Dark](/demo/mainscreen_dark.png)
+![Main Screen Dark](/demo/mainscreen_dark_demo.png)
 
-![Share](/demo/share.png)
+![Share](/demo/share_demo.png)
 
 ### How to Build ###
 - `./gradlew run` - run application

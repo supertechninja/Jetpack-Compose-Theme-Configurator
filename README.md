@@ -2,8 +2,9 @@
 
 ### About ###
 I was always curious about how each Material Theme color applies across all of the Material Components.
-This application allows you to configure your Theme colors and see the components react in realtime as well as be able to
-Export that theme to your @Compose code
+This application allows you to configure your Theme colors and toggle the Out of the Box optional elements
+on each Material Component.
+Once you have the Theme they way you like you can export that theme to your @Compose code
 
 ### Screenshots ###
 
@@ -11,7 +12,7 @@ Export that theme to your @Compose code
 
 ![Backdrop](/demo/backdrop_extended.png)
 
-![BackDrop Dark](/demo/backdrop_extended_dark.png)
+![Main Screen Dark](/demo/mainscreen_dark.png)
 
 ![Share](/demo/share.png)
 
